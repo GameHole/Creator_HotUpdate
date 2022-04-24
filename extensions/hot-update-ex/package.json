@@ -1,0 +1,17 @@
+{
+    "name": "hot-update-ex",
+    "title": "hot-update-ex",
+    "package_version": 2,
+    "version": "1.0.0",
+    "author": "任润栋",
+    "description": "hot-update-ex",
+    "contributions": {
+        "builder": "./dist/builder.js"
+    },
+    "dependencies": {
+        "@types/fs-extra": "^5.0.4",
+        "@types/node": "^14.5.2",
+        "fs-extra": "^10.0.0",
+        "ftp-ts": "^1.0.19"
+    }
+}
