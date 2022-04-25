@@ -39,13 +39,13 @@ class HotFileGenrator {
             let floaderPath = FileHelper_1.FileHelper.ResolvePath(projectPath, configsPath);
             let configs = this.getConfigs(floaderPath);
             configs.forEach(cfg => {
+                if (custom["autoIncreaseBuild"])
+                    cfg.IncreaseBuild();
                 let geninfo = cfg.getGenrateInfo(buildPath, op.name);
                 let url = this.adjustUrl(cfg) + geninfo.projectName;
                 HotUpdateHelper_1.HotUpdateHelper.GenrateHotUpdateFiles(url, geninfo.ver, buildPath, geninfo.manifestPath);
                 this.copyFiles(cfg.info, geninfo, buildPath, projectPath);
                 this.autoUpLoad(cfg.info, url, geninfo.manifestPath);
-                if (custom["autoIncreaseBuild"])
-                    cfg.IncreaseBuild();
             });
         }
     }

@@ -30,6 +30,21 @@ class FileHelper {
         }
         fs.copyFileSync(src, dest);
     }
+    static Search(dirPath, fileName, outFile) {
+        let files = fs.readdirSync(dirPath);
+        for (let fname of files) {
+            let filepath = path_1.default.join(dirPath, fname);
+            if (fileName == fname) {
+                outFile.out = filepath;
+                return;
+            }
+            let stats = fs.statSync(filepath);
+            if (stats.isDirectory()) {
+                this.Search(filepath, fileName, outFile);
+            }
+        }
+        ;
+    }
     static CreateDirectory(dir) {
         fs.mkdirSync(dir, { recursive: true });
     }

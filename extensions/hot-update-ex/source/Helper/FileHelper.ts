@@ -11,6 +11,24 @@ export class FileHelper
         }
         fs.copyFileSync(src, dest);
     }
+    static Search(dirPath: string, fileName: string,outFile:{out:string}):void
+    {
+        let files = fs.readdirSync(dirPath);
+        for (let fname of files)
+        {
+            let filepath = path.join(dirPath, fname);
+            if (fileName == fname)
+            {
+                outFile.out = filepath;
+                return;
+            }  
+            let stats = fs.statSync(filepath);
+            if (stats.isDirectory())
+            {
+                this.Search(filepath,fileName,outFile);
+            }
+        };
+    }
     static CreateDirectory(dir: string)
     {
         fs.mkdirSync(dir, { recursive: true });

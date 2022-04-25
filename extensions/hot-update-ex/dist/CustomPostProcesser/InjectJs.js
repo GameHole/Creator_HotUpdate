@@ -22,57 +22,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InjectJs = void 0;
 const fs = __importStar(require("fs"));
 const Path = __importStar(require("path"));
+const FileHelper_1 = require("../Helper/FileHelper");
 class InjectJs {
-    constructor() {
-        this.inject_script = `
-    (function () {
-        if (typeof window.jsb === 'object') {
-            var hotUpdateSearchPaths = localStorage.getItem('HotUpdateSearchPaths');
-            if (hotUpdateSearchPaths) {
-                var paths = JSON.parse(hotUpdateSearchPaths);
-                jsb.fileUtils.setSearchPaths(paths);
-    
-                var fileList = [];
-                var storagePath = paths[0] || '';
-                var tempPath = storagePath + '_temp/';
-                var baseOffset = tempPath.length;
-    
-                if (jsb.fileUtils.isDirectoryExist(tempPath) && !jsb.fileUtils.isFileExist(tempPath + 'project.manifest.temp')) {
-                    jsb.fileUtils.listFilesRecursively(tempPath, fileList);
-                    fileList.forEach(srcPath => {
-                        var relativePath = srcPath.substr(baseOffset);
-                        var dstPath = storagePath + relativePath;
-    
-                        if (srcPath[srcPath.length] == '/') {
-                            jsb.fileUtils.createDirectory(dstPath)
-                        }
-                        else {
-                            if (jsb.fileUtils.isFileExist(dstPath)) {
-                                jsb.fileUtils.removeFile(dstPath)
-                            }
-                            jsb.fileUtils.renameFile(srcPath, dstPath);
-                        }
-                    })
-                    jsb.fileUtils.removeDirectory(tempPath);
-                }
-            }
-        }
-    })();
-    `;
-    }
     Run(projectPath, buildPath, op) {
         var root = Path.join(buildPath, 'assets');
         var url = Path.join(root, "main.js");
-        let str = this.inject_script;
+        let script = this.getInject_script(projectPath);
         fs.readFile(url, "utf8", function (err, data) {
             if (err)
                 throw err;
-            var newStr = str + data;
+            var newStr = script + data;
             fs.writeFile(url, newStr, function (error) {
                 if (error)
                     throw error;
             });
         });
+    }
+    getInject_script(projectPath) {
+        let out = { out: undefined };
+        FileHelper_1.FileHelper.Search(projectPath, "__HotUpdateSaveFile.ts", out);
+        if (out.out) {
+            let content = FileHelper_1.FileHelper.ReadAllText(out.out);
+            let funcDefine = this.getContent(content, "##REPLEASE_START##", "//##REPLEASE_END##");
+            let funcName = this.getContent(funcDefine, "/*f_s*/", "/*f_e*/");
+            return funcDefine + "\n" + funcName + "();";
+        }
+        else {
+            throw "inject file not found";
+        }
+    }
+    getContent(content, startMark, endMark) {
+        let startIndex = content.indexOf(startMark) + startMark.length;
+        let endIndex = content.indexOf(endMark);
+        return content.substring(startIndex, endIndex);
     }
 }
 exports.InjectJs = InjectJs;
