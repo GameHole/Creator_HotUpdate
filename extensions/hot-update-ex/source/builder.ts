@@ -1,4 +1,4 @@
-import FTP  from "ftp-ts"
+// import FTP  from "ftp-ts"
 import { resourcesPath } from 'process';
 import { BuildPlugin } from '../@types';
 import { BuildConfig } from './UIConfig/BuildConfig';

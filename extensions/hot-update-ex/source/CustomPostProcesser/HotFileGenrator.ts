@@ -1,7 +1,6 @@
 import { resourcesPath } from "process";
 import { IBuildTaskOption } from "../../@types";
 import { FileHelper } from "../Helper/FileHelper";
-import { UploadHelper } from "../Helper/UpLoadHelper";
 import { IPostProcesser } from "../PostProcess/IPostProcesser";
 import { HotUpdateHelper } from "./HotUpdateHelper";
 interface ConfigInfo
@@ -117,9 +116,9 @@ export class HotFileGenrator implements IPostProcesser
     }
     autoUpLoad(cfginfo:ConfigInfo,url:string,manifestPath:string)
     {
-        if (cfginfo.autoUpload)
-        {
-            UploadHelper.UploadDirectroy(url, manifestPath);
-        }
+        // if (cfginfo.autoUpload)
+        // {
+        //     UploadHelper.UploadDirectroy(url, manifestPath);
+        // }
     }
 }
